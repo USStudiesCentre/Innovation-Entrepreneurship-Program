@@ -1,0 +1,22 @@
+---
+title: "entrepreneurship data"
+author: "Zoe Meers"
+date: "5 July 2017"
+output: word_document
+---
+```{r, echo=FALSE, include=FALSE}
+library(Hmisc)
+GEM_indiv_entr_data <- spss.get("C:/Users/zmee4604/Downloads/GEM_2013_ind_entrep_data.sav", use.value.labels = TRUE)
+```
+```{r, echo=FALSE, include=FALSE}
+label(GEM_indiv_entr_data)
+indiv_entr_data_label<-as.data.frame(label.data.frame(GEM_indiv_entr_data))
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+library(pander)
+pander::pander(indiv_entr_data_label)
+```
+
+
