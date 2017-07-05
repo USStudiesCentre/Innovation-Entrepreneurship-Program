@@ -7,61 +7,67 @@ output: html_document
 
 
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(readr)
 GII <- read_csv("~/Downloads/GII.csv")
 View(GII)
 ```
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(dplyr)
 GII <- GII %>%
   select(c("X1","X2","Australia","United States of America","Australia_1","United States of America_1","Australia_2","United States of America_2","Australia_3","United States of America_3"))
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(plyr)
 GII<-plyr::rename(GII, c("Australia"="Rank Indicator:Aus", "United States of America"="Rank Indicator:US","Australia_1"="Score:Aus", "United States of America_1"="Score:US","Australia_2"="Value:Aus","United States of America_2"="Value:US","Australia_3"="S/W:Aus","United States of America_3"="S/W:US"))
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII[ GII == "n/a"] <- NA
 GII[ GII == "N/A"] <- NA
 GII[ GII == "NA"] <- NA  
 ```
 
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
+GII_indicators <- GII %>%
+  slice(1:5)
+```
+
+
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_institutions <- GII %>%
   slice(7:18)
 ```
 
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_capital <- GII %>%
   slice(19:34)
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_infrastructure <- GII %>%
   slice(35:48)
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_market <- GII %>%
   slice(49:61)
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_business <- GII %>%
   slice(62:80)
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_KnowledgeTech <- GII %>%
   slice(81:98)
 ```
 
-```{r}
+```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_creativity <- GII %>%
   slice(99:115)
 ```
