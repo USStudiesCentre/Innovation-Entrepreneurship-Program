@@ -1,0 +1,42 @@
+---
+title: "GEM Analysis"
+author: "Zoe Meers"
+date: "5 July 2017"
+output:
+  word_document: default
+  html_document: default
+---
+```{r, echo=FALSE, include=FALSE}
+library(Hmisc)
+GEM_data <- spss.get("C:/Users/zmee4604/Downloads/GEM_2013_National_Data.sav", use.value.labels = TRUE)
+View(GEM_data)
+```
+
+```{r, include=FALSE}
+str(GEM_data)
+```
+```{r, echo=FALSE, include=FALSE}
+library(dplyr)
+USA_data<-GEM_data %>%
+  filter(country=="United States")
+```
+```{r, echo=FALSE, include=FALSE}
+library(tidyr)
+USA_data <- USA_data %>%
+  gather(USA_data)
+```
+```{r,echo=FALSE, include=FALSE}
+label(GEM_data)
+GEM_labels<-as.data.frame(label.data.frame(GEM_data))
+```
+```{r, echo=TRUE,include=FALSE}
+GEM_USA_data<-cbind(GEM_labels,USA_data)
+GEM_USA_data$USA_data <- NULL
+```
+
+```{r, echo=FALSE, warning=FALSE}
+library(pander)
+pander::pander(GEM_USA_data)
+```
+
+
