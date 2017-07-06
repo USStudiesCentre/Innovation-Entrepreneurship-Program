@@ -2,7 +2,9 @@
 title: "GII"
 author: "Zoe Meers"
 date: "5 July 2017"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 
@@ -71,6 +73,34 @@ GII_KnowledgeTech <- GII %>%
 GII_creativity <- GII %>%
   slice(99:115)
 ```
+
+```{r, echo=FALSE, message=FALSE, warnings=FALSE, fig.width=15, fig.height=8}
+library(gridExtra)
+
+grid.table(GII_indicators)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_institutions)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_capital)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_infrastructure)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_market)
+```
+```{r, echo=FALSE,fig.width=15, fig.height=8}
+grid.table(GII_business)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_KnowledgeTech)
+```
+```{r, echo=FALSE, fig.width=15, fig.height=8}
+grid.table(GII_creativity)
+```
+
 
 
 
