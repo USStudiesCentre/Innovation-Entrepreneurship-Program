@@ -22,7 +22,7 @@ GII <- GII %>%
 
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(plyr)
-GII<-plyr::rename(GII, c("Australia"="Rank Indicator:Aus", "United States of America"="Rank Indicator:US","Australia_1"="Score:Aus", "United States of America_1"="Score:US","Australia_2"="Value:Aus","United States of America_2"="Value:US","Australia_3"="S/W:Aus","United States of America_3"="S/W:US"))
+GII<-plyr::rename(GII, c("Australia"="Rank Indicator:Aus", "United States of America"="Rank Indicator:US","Australia_1"="Score:Aus","Australia_2"="Score:Aus","United States of America_2"="Score:US","Australia_3"="S/W:Aus","United States of America_3"="S/W:US"))
 ```
 
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
@@ -30,6 +30,13 @@ GII[ GII == "n/a"] <- NA
 GII[ GII == "N/A"] <- NA
 GII[ GII == "NA"] <- NA  
 ```
+
+```{r}
+library(tidyr)
+GII[is.na(GII)] = ''
+GII<-unite(GII, X1:X2, sep='')
+```
+
 
 
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
@@ -100,7 +107,6 @@ grid.table(GII_KnowledgeTech)
 ```{r, echo=FALSE, fig.width=15, fig.height=8}
 grid.table(GII_creativity)
 ```
-
 
 
 
