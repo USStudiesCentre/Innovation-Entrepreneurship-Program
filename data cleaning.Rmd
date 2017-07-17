@@ -17,12 +17,12 @@ View(GII)
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(dplyr)
 GII <- GII %>%
-  select(c("X1","X2","Australia","United States of America","Australia_1","United States of America_1","Australia_2","United States of America_2","Australia_3","United States of America_3"))
+  select(c("X1","X2","Australia","United States of America","Australia_2","United States of America_2","Australia_3","United States of America_3"))
 ```
 
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 library(plyr)
-GII<-plyr::rename(GII, c("Australia"="Rank Indicator:Aus", "United States of America"="Rank Indicator:US","Australia_1"="Score:Aus","Australia_2"="Score:Aus","United States of America_2"="Score:US","Australia_3"="S/W:Aus","United States of America_3"="S/W:US"))
+GII<-plyr::rename(GII, c("Australia"="Rank Indicator:Aus", "United States of America"="Rank Indicator:US","Australia_2"="Score:Australia","United States of America_2"="Score:US","Australia_3"="S/W:Aus","United States of America_3"="S/W:US"))
 ```
 
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
@@ -34,11 +34,85 @@ GII[ GII == "NA"] <- NA
 ```{r}
 library(tidyr)
 GII[is.na(GII)] = ''
-GII<-unite(GII, X1:X2, sep='')
+GII<-unite(GII, indicators, X1:X2, sep='')
+```
+
+```{r}
+GII[grep("^1.", GII$indicators), "IO"] <- "institutions"
+GII[grep("^2.", GII$indicators), "IO"] <- "human capital"
+GII[grep("^3.", GII$indicators), "IO"] <- "infrastructure"
+GII[grep("^4.", GII$indicators), "IO"] <- "market"
+GII[grep("^5.", GII$indicators), "IO"] <- "business"
+GII[grep("^6.", GII$indicators), "IO"] <- "knowledge"
+GII[grep("^7.", GII$indicators), "IO"] <- "creativity"
 ```
 
 
+```{r}
+GII[grep("^1.1.", GII$indicators), "sub-ind"] <- "political env"
 
+GII[grep("^1.2.", GII$indicators), "sub-ind"] <- "regulatory env"
+
+GII[grep("^1.3.", GII$indicators), "sub-ind"] <- "business env"
+
+```
+
+```{r}
+GII[grep("^2.1.", GII$indicators), "sub-ind"] <- "education"
+
+GII[grep("^2.2.", GII$indicators), "sub-ind"] <- "tertiary education"
+
+GII[grep("^2.3.", GII$indicators), "sub-ind"] <- "research and development"
+
+```
+
+
+```{r}
+GII[grep("^3.1.", GII$indicators), "sub-ind"] <- "ICT"
+
+GII[grep("^3.2.", GII$indicators), "sub-ind"] <- "general infrastructure"
+
+GII[grep("^3.3.", GII$indicators), "sub-ind"] <- "ecological sustainability"
+
+```
+
+
+```{r}
+GII[grep("^4.1.", GII$indicators), "sub-ind"] <- "credit"
+
+GII[grep("^4.2.", GII$indicators), "sub-ind"] <- "investment"
+
+GII[grep("^4.3.", GII$indicators), "sub-ind"] <- "trade, competition, and market scale"
+
+```
+
+```{r}
+GII[grep("^5.1.", GII$indicators), "sub-ind"] <- "knowledge workers"
+
+GII[grep("^5.2.", GII$indicators), "sub-ind"] <- "innovation linkages"
+
+GII[grep("^5.3.", GII$indicators), "sub-ind"] <- "knowledge absorption"
+
+```
+
+```{r}
+GII[grep("^6.1.", GII$indicators), "sub-ind"] <- "knowledge creation"
+
+GII[grep("^6.2.", GII$indicators), "sub-ind"] <- "knowledge impact"
+
+GII[grep("^6.3.", GII$indicators), "sub-ind"] <- "knowledge diffusion"
+
+```
+
+
+```{r}
+GII[grep("^7.1.", GII$indicators), "sub-ind"] <- "intangible assets"
+
+GII[grep("^7.2.", GII$indicators), "sub-ind"] <- "creative goods and services"
+
+GII[grep("^7.3.", GII$indicators), "sub-ind"] <- "online creativity"
+
+```
 ```{r, warnings=FALSE, include=FALSE, echo=FALSE}
 GII_indicators <- GII %>%
   slice(1:5)
@@ -81,36 +155,8 @@ GII_creativity <- GII %>%
   slice(99:115)
 ```
 
-```{r, echo=FALSE, message=FALSE, warnings=FALSE, fig.width=15, fig.height=8}
-library(gridExtra)
 
-grid.table(GII_indicators)
+```{r}
+write.csv(GII, "Global Innovation Index clean data.csv")
 ```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_institutions)
-```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_capital)
-```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_infrastructure)
-```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_market)
-```
-```{r, echo=FALSE,fig.width=15, fig.height=8}
-grid.table(GII_business)
-```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_KnowledgeTech)
-```
-```{r, echo=FALSE, fig.width=15, fig.height=8}
-grid.table(GII_creativity)
-```
-
-
-
-
-
-
 
