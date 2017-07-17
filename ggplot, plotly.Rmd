@@ -1,0 +1,157 @@
+---
+title: "example radial chart"
+author: "Zoe Meers"
+date: "7 July 2017"
+output: html_document
+---
+
+```{r}
+GII$`Score:Australia` <- as.numeric(as.character(GII$`Score:Australia`))
+#GII$`IO` <- factor(GII$`IO`, levels=unique(GII$IO))
+```
+
+
+```{r, fig.height=10, fig.width=10}
+# inspired by 
+# https://s-media-cache-ak0.pinimg.com/736x/22/1a/d0/221ad079e362ba13969b1bef30b6a5f2.jpg
+
+library(plotly)
+
+
+
+#  Add colors
+#colors <- RColorBrewer::brewer.pal(length(unique(GII$`S/W:Aus`)), "Spectral")
+`S/W:Aus` <- unique(GII$`S/W:Aus`)
+
+GII$colors <- GII$`S/W:Aus`
+
+#for(i in 1:length(IO)){
+#  idx <- GII$colors %in% IO[i]   
+#  GII$colors[idx] <- colors[i]
+#}
+
+# Get incremental angle value
+n <- nrow(GII) + 20
+dtheta <- 2*pi / n
+theta <- pi / 2
+
+# Initialise
+x <- c()
+y <- c()
+xend <- c()
+yend <- c()
+
+# This is for the white - circle in the middle
+adjust <- 30
+
+# Calculate x and y coordinates
+for(ctr in 1:nrow(GII)){
+  
+  a <- GII$'Score:Australia'[ctr] + adjust
+  
+  x[ctr] <- adjust * cos(theta)
+  y[ctr] <- adjust * sin(theta)
+  
+  xend[ctr] <- a * cos(theta)
+  yend[ctr] <- a * sin(theta)
+  
+  theta <- theta + dtheta
+}
+
+
+plot.GII <- data.frame(x, y, xend, yend)
+
+p <- plot_ly(plot.GII, 
+             x = ~x, y = ~y,
+             xend = ~xend, yend = ~yend,
+             group_by=~IO) %>% 
+  add_segments(line = list(width = 4)) %>%
+  layout(plot_bgcolor='rgb(254, 247, 234)') %>% 
+layout(paper_bgcolor='rgb(254, 247, 234)')
+p
+```
+```{r}
+# Add layout options, shapes etc
+p <- layout(p,
+            xaxis = list(domain = c(0, 0.5), title = "", showgrid = F, zeroline = F, showticklabels = F),
+            yaxis = list(title = "", showgrid = T, zeroline = F, showticklabels = F))
+            legend = list(x = 0.50, y = 0.47, font = list(size = 10))
+p
+```
+
+```{r}
+# Add annotations for country names
+theta <- pi / 2
+textangle <- 90
+
+
+for(ctr in 1:nrow(df)){
+  
+  a <- GII$indicators[ctr] + adjust
+  a <- a + a/12
+  
+  x <- a * cos(theta)
+  y <- a * sin(theta)
+  
+  if(ctr < 51) {xanchor <- "right"; yanchor <- "middle"}
+  if(ctr > 51 & ctr < 84) {xanchor <- "right"; yanchor <- "middle"}
+  if(ctr > 84) {xanchor <- "left"; yanchor <- "middle"}
+
+  p$x$layout$annotations[[ctr]] <- list(x = x, y = y, showarrow = F,
+                                        text = paste0(df$Country[ctr]),
+                                        textangle = textangle,
+                                        xanchor = xanchor,
+                                        yanchor = yanchor,
+                                        font = list(family = "serif", size = 9),
+                                        borderpad = 0,
+                                        borderwidth = 0)
+  theta <- theta + dtheta
+  textangle <- textangle - (180 / pi * dtheta)
+  
+  if(textangle < -90) textangle <- 90
+}
+p
+```
+```{r}
+# Titles and some other details
+p$x$layout$annotations[[148]] <- list(xref = "paper", yref = "paper",
+                                      x = 0, y = 1, showarrow = F,
+                                      xanxhor = "left", yanchor = "top",
+                                      align = "left",
+                                      text = "<em>Carbon dioxide emissions</em><br><sup>(metric tons per capita)</sup>",
+                                      font = list(size = 25, color = "black"))
+
+p$x$layout$annotations[[149]] <- list(xref = "paper", yref = "paper",
+                                      x = 0, y = 0.9, showarrow = F,
+                                      xanxhor = "left", yanchor = "top",
+                                      align = "left",
+                                      text = "Emissions from burning of solid, liquid and <br>gas fuels and the manufacture of cement.",
+                                      font = list(size = 18, color = "#808080"))
+
+p$x$layout$annotations[[150]] <- list(xref = "paper", yref = "paper",
+                                      x = 0.20, y = 0.60, showarrow = F,
+                                      xanxhor = "left", yanchor = "top",
+                                      align = "left",
+                                      text = "<b>Annual CO<sub>2</sub> emissions</b><br><b>for 147 countries.</b>",
+                                      font = list(size = 15, color = "black"))
+p
+
+```
+```{r}
+sequence_length = length(unique(GII$`Score:Aus`))
+first_sequence = c(1:(sequence_length%/%2)) 
+second_sequence = c((sequence_length%/%2+1):sequence_length) 
+first_angles = c(90 - 180/length(first_sequence) * first_sequence)
+second_angles = c(-90 - 180/length(second_sequence) * second_sequence)
+```
+
+```{r}
+ggplot(GII, aes(x=`sub-ind`, y=`Score:Australia`))+ 
+  geom_point() + 
+  coord_polar() +
+  theme(axis.text.x = element_text(
+    angle= c(first_angles,second_angles)
+    )
+  )
+```
+
