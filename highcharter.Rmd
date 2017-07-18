@@ -97,8 +97,10 @@ names(GII_clean_index)[names(GII_clean_index)=="ifelse(is.na(S.W.US), \"N/A\", S
 ```
 
 
+
+
 ```{r}
-hchart(GII_clean_index, "scatter", hcaes(x = Rank.Indicator.Aus, y = Score.Australia, group = Strength.Weak.Aus, series_names(c("Strength","Weakness"," "))))
+hchart(GII_clean_index, "scatter", hcaes(x = Rank.Indicator.US, y = Score.US,  group = Strength.Weak.US, series_names(c("Strength","Weakness"," "))))
 ```
 
 
