@@ -19,36 +19,20 @@ GII_clean_index <- slice(GII_clean, 7:115) %>%
 ```
 
 
-```{r}
-
-x <- c("Score:", "Rank:")
-y <- c("{Score.Australia}", "{Rank.Indicator.Aus}")
-tooltip_table(x, y)
 
 
-hchart(GII_clean_index, "column",  hcaes(x = indicators, y = Score.Australia, group = IO)) %>%
-     hc_title(text = " 2017 Global Innovation Index - Australia") %>%
-  hc_xAxis(title = list(text = " "), gridLineWidth = 0,
-    labels = list(c())) %>%
-  hc_yAxis(title = list(text = "Score (out of 100)"), min=0,max=100,startOnTick=TRUE,
-           tickPositions=seq(0,100,by=10))  %>%
-  hc_add_theme(hc_theme_smpl()) #%>%
-  #hc_tooltip(tooltip_table(x, y))
-  
-```
-
-
-
-```{r, fig.height=20}
+```{r, fig.height=20, warnings=FALSE, message=FALSE}
 
 
  a <- hchart(GII_clean_index, "column",  hcaes(x = indicators, y = Score.Australia, group = IO), pointWidth=8) %>%
      hc_title(text = "2017 Global Innovation Index - Australia") %>%
-  hc_subtitle(text="Rank: 23. Score: 51.8. Score is the average of innovation inputs and innovation outputs") %>%
-  hc_xAxis(title = list(text = " "), gridLineWidth = 0,
-    labels = list(c())) %>% #, plot.Bands(list=list(from = 3, to = 5, color = "gray"))) %>%
-  hc_yAxis(title = list(text = "Score (out of 100)"),min=0,max=100,startOnTick=TRUE,
-           tickPositions=seq(0,100,by=10)) %>% hc_add_theme(hc_theme_smpl())
+  hc_subtitle(text="Score is the average of innovation inputs and innovation outputs") %>%
+  hc_xAxis(title = list(text = " "), gridLineWidth = 0,labels = list(c(text = " ")) ) %>%
+  hc_yAxis(title = list(text = "Score (out of 100)"), min=0,max=100,startOnTick=TRUE,
+           tickPositions=seq(0,100,by=10)) %>% hc_add_theme(hc_theme_smpl()) %>%
+  hc_annotations(list(xValue=10, yValue=95, title=list(text="Rank: 23; Score: 51.8"))) %>%
+  hc_credits(enabled = TRUE, text = "Credit: Global Innovation Index",
+             href = "https://www.globalinnovationindex.org")
 #a <- a %>%
  # hc_add_series(GII_clean_index, type = "column", hcaes(x= `indicators`, y=`Score.US`), color = 'url(#highcharts-default-pattern-0)', pointWidth=5, name="US Score", align="center")
 
@@ -60,19 +44,65 @@ a
 
 
  b <- hchart(GII_clean_index, "column",  hcaes(x = indicators, y = Score.US, group = IO), pointWidth=8) %>%
-  hc_subtitle(text="Rank: 4. Score:61.4. Score is the average of innovation inputs and innovation outputs") %>%
+  hc_subtitle(text="Score is the average of innovation inputs and innovation outputs") %>%
      hc_title(text = "2017 Global Innovation Index - US") %>%
   hc_xAxis(title = list(text = " "), gridLineWidth = 0,
     labels = list(c())) %>% #, plot.Bands(list=list(from = 3, to = 5, color = "gray"))) %>%
   hc_yAxis(title = list(text = "Score (out of 100)"),min=0,max=100,startOnTick=TRUE,
-           tickPositions=seq(0,100,by=10)) %>% hc_add_theme(hc_theme_smpl())
+           tickPositions=seq(0,100,by=10)) %>% hc_add_theme(hc_theme_smpl())  %>%
+  hc_annotations(list(xValue=10, yValue=95, title=list(text="Rank: 4; Score: 61.4"))) %>%
+  hc_credits(enabled = TRUE, text = "Credit: Global Innovation Index",
+             href = "https://www.globalinnovationindex.org")
 #b <- b %>%
  # hc_add_series(GII_clean_index, type = "column", hcaes(x= `indicators`, y=`Score.US`), color = 'url(#highcharts-default-pattern-0)', pointWidth=5, name="US Score", align="center")
 
 b
 ```
 
-```{r}
 
+
+```{r}
+library(readxl)
+GII_timeseries <- read_excel("~/GII/GII_timeseries.xlsx")
+View(GII_timeseries)
 ```
 
+
+
+
+
+```{r}
+highchart() %>%
+  hc_title(text="Global Innovation Index 2013-2017", align="center") %>%
+  hc_xAxis(categories = GII_timeseries$year) %>%
+  hc_add_series(data=GII_timeseries$`score:US`, type="column", name="US Score") %>%
+  hc_add_series(data=GII_timeseries$`score:AUS`, type="column", name="Australian Score") %>%
+  hc_add_series(data=GII_timeseries$`rank:US`, name="US Ranking") %>%
+  hc_add_series(data=GII_timeseries$`rank:AUS`, name="Australian Ranking")  %>%
+  hc_credits(enabled = TRUE, text = "Credit: Global Innovation Index",
+             href = "https://www.globalinnovationindex.org") %>%
+  #hc_add_series(data=GII_timeseries$`rank:NZ`, name="NZ Ranking") %>%
+  #hc_add_series(data=GII_timeseries$`rank:CA`, name="Canadian Ranking") %>%
+#  hc_add_series(data=GII_timeseries$`rank:UK`, name="UK Ranking") %>%
+  hc_add_theme(hc_theme_smpl()) 
+```
+```{r}
+unique(names(GII_clean_index))
+```
+
+
+```{r}
+names(GII_clean_index)[names(GII_clean_index)=="ifelse(is.na(S.W.Aus), \"N/A\", S.W.Aus)"] <- "Strength.Weak.Aus"
+names(GII_clean_index)[names(GII_clean_index)=="ifelse(is.na(S.W.US), \"N/A\", S.W.US)"] <- "Strength.Weak.US"
+```
+
+
+```{r}
+hchart(GII_clean_index, "scatter", hcaes(x = Rank.Indicator.Aus, y = Score.Australia, group = Strength.Weak.Aus, series_names(c("Strength","Weakness"," "))))
+```
+
+
+
+```{r}
+hchart(GII_clean_index, "scatter", hcaes(x = Rank.Indicator.US, y = Score.US,  group = Strength.Weak.US, series_names(c("Strength","Weakness"," "))))
+```
